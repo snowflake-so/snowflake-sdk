@@ -1,0 +1,2 @@
+export const SNOWFLAKE_PROGRAM_ID =
+  "BiVwqu45yQTxqTTTAD1UrMZNyZ3qsEVqKwTEfG9BvUs6";

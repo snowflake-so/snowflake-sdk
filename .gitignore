@@ -1,0 +1,10 @@
+# dependencies
+/node_modules
+
+# production
+/dist
+/logs
+
+# misc
+.DS_Store
+*.iml

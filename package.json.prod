@@ -1,0 +1,7 @@
+{
+    "dependencies": {
+        "@project-serum/anchor": "^0.17.0",
+        "log4js": "^6.3.0",
+        "node-cron": "^3.0.0"
+    }
+}
