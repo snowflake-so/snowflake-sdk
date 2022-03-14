@@ -346,6 +346,22 @@
             "type": "i32"
           },
           {
+            "name": "customComputeBudget",
+            "type": "u32"
+          },
+          {
+            "name": "customFee",
+            "type": "u32"
+          },
+          {
+            "name": "customField1",
+            "type": "i32"
+          },
+          {
+            "name": "customField2",
+            "type": "i32"
+          },
+          {
             "name": "externalId",
             "type": "string"
           },
