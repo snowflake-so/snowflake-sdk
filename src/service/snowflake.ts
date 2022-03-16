@@ -73,4 +73,12 @@ export class Snowflake {
   async findGlobal(): Promise<Job[]> {
     return await this.finder.findAll();
   }
+
+  async getSnowflakePDAForUser(user: PublicKey): Promise<PublicKey> {
+    const [pda] = await PublicKey.findProgramAddress(
+      [user.toBuffer()],
+      new PublicKey(SNOWFLAKE_PROGRAM_ID)
+    );
+    return pda;
+  }
 }
