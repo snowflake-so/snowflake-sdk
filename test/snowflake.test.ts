@@ -93,3 +93,10 @@ test("delete job", async function () {
     beforeDeleteFetchJobsByOwner.length - 1
   );
 });
+
+test("get Snowflake PDA for user", async function () {
+  let pda = await snowflake.getSnowflakePDAForUser(
+    new PublicKey("EpmRY1vzTajbur4hkipMi3MbvjbJHKzqEAAqXj12ccZQ")
+  );
+  expect(pda.toString()).toBe("Br7r5czPJ3yrTXo3KcS1MCpZVASyc2E5gtAeCfm37hth");
+});
