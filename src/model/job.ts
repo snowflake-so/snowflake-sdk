@@ -80,20 +80,11 @@ export class Job {
     return serJob;
   }
 
-  isCronWeekday(): boolean {
-    const [, , , , weekday] = this.cron.split(" ");
-    return !!weekday && weekday !== "*";
-  }
-
   validateForCreate() {
-    if (this.isCronWeekday())
-      throw new Error(ErrorMessage.CreateJobWithWeekdayCron);
     if (this.pubKey) throw new Error(ErrorMessage.CreateJobWithExistingPubkey);
   }
 
   validateForUpdate() {
-    if (this.isCronWeekday())
-      throw new Error(ErrorMessage.UpdateJobWithWeekdayCron);
     if (!this.pubKey)
       throw new Error(ErrorMessage.UpdateJobWithoutExistingPubkey);
   }
