@@ -13,5 +13,5 @@
     "strictPropertyInitialization": false,
     "resolveJsonModule": true
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }

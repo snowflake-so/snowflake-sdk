@@ -1,4 +1,4 @@
-import { PublicKey, TransactionSignature } from "@solana/web3.js";
+import { Commitment, PublicKey, TransactionSignature } from "@solana/web3.js";
 import { Idl, Program, Provider } from "@project-serum/anchor";
 import { TransactionSender } from "./transaction-sender";
 import Finder from "./finder";
@@ -72,5 +72,18 @@ export class Snowflake {
 
   async findGlobal(): Promise<Job[]> {
     return await this.finder.findAll();
+  }
+
+  subscribeJob(
+    jobPubkey: PublicKey,
+    opts?: Partial<{
+      commitment: Commitment;
+    }>
+  ) {
+    return this.program.account.flow.subscribe(jobPubkey, opts?.commitment);
+  }
+
+  unsubscribeJob(jobPubkey: PublicKey) {
+    return this.program.account.flow.unsubscribe(jobPubkey);
   }
 }
