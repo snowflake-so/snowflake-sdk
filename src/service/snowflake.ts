@@ -81,4 +81,20 @@ export class Snowflake {
     );
     return pda;
   }
+
+  async depositFeeAccount(lamports: number): Promise<string> {
+    const walletPubkey = this.provider.wallet.publicKey;
+    const pda = await this.getSnowflakePDAForUser(walletPubkey);
+    const depositTx = this.instructionBuilder.buildDepositFeeInstruction(
+      walletPubkey,
+      pda,
+      lamports
+    );
+    const tx = await this.transactionSender.sendWithWallet({
+      instructions: depositTx.instructions,
+      signers: depositTx.signers,
+    });
+
+    return tx;
+  }
 }

@@ -58,4 +58,14 @@ export class InstructionBuilder {
     const deleteIx = this.program.instruction.deleteFlow(deleteContext);
     return { instructions: [deleteIx], signers: [] };
   }
+
+  buildDepositFeeInstruction(from: PublicKey, to: PublicKey, amount: number) {
+    let depositTx = SystemProgram.transfer({
+      fromPubkey: from,
+      toPubkey: to,
+      lamports: amount,
+    });
+
+    return { instructions: [depositTx], signers: [] };
+  }
 }
