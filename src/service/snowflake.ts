@@ -85,7 +85,7 @@ export class Snowflake {
   async depositFeeAccount(lamports: number): Promise<string> {
     const walletPubkey = this.provider.wallet.publicKey;
     const pda = await this.getSnowflakePDAForUser(walletPubkey);
-    const depositTx = this.instructionBuilder.buildDepositFeeInstruction(
+    const depositTx = this.instructionBuilder.buildSystemTransferInstruction(
       walletPubkey,
       pda,
       lamports

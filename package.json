@@ -1,7 +1,7 @@
 {
   "name": "@snowflake-so/snowflake-sdk",
   "description": "Typescript SDK for Snowflake automation protocol",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
