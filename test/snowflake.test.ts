@@ -100,3 +100,14 @@ test("get Snowflake PDA for user", async function () {
   );
   expect(pda.toString()).toBe("Br7r5czPJ3yrTXo3KcS1MCpZVASyc2E5gtAeCfm37hth");
 });
+
+test("deposit fee account", async function () {
+  const amount = 100000;
+  const owner = provider.wallet.publicKey;
+  let pda = await snowflake.getSnowflakePDAForUser(owner);
+  const balanceBeforeDeposit = await provider.connection.getBalance(pda);
+  await snowflake.depositFeeAccount(amount);
+  const balanceAfterDeposit = await provider.connection.getBalance(pda);
+
+  expect(balanceAfterDeposit).toBe(balanceBeforeDeposit + amount);
+});

@@ -1,6 +1,7 @@
 import { instructions, rightNow, tomorrow } from "./test-data";
 import { JobBuilder } from "../src/builder/job-builder";
 import { ErrorMessage } from "../src/config/error";
+import { TriggerType } from "../src/model/job";
 
 test("build once-off scheduled job", async function () {
   const job = new JobBuilder()
@@ -33,11 +34,9 @@ test("build cron weekday job", () => {
     .scheduleCron("0 * * * 2", 2)
     .build();
 
-  expect(() => job.validateForCreate()).toThrowError(
-    ErrorMessage.CreateJobWithWeekdayCron
-  );
+  console.log(job);
 
-  expect(() => job.validateForUpdate()).toThrowError(
-    ErrorMessage.UpdateJobWithWeekdayCron
-  );
+  expect(job.recurring).toBe(true);
+  expect(job.name).toBe("hello world");
+  expect(job.triggerType).toBe(TriggerType.Time);
 });
