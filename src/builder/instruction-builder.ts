@@ -59,7 +59,7 @@ export class InstructionBuilder {
     return { instructions: [deleteIx], signers: [] };
   }
 
-  buildDepositFeeInstruction(from: PublicKey, to: PublicKey, amount: number) {
+  buildSystemTransferInstruction(from: PublicKey, to: PublicKey, amount: number) {
     let depositTx = SystemProgram.transfer({
       fromPubkey: from,
       toPubkey: to,
