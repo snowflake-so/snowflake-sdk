@@ -9,7 +9,7 @@ export class InstructionBuilder {
     this.program = program;
   }
 
-  buildCreateJobInstruction(job: Job): InstructionsAndSigners {
+  buildCreateJobInstruction(job: Job, accountSize?: number): InstructionsAndSigners {
     const serializableJob = job.toSerializableJob();
     let newFlowKeyPair = Keypair.generate();
 
@@ -22,7 +22,7 @@ export class InstructionBuilder {
     };
 
     const createIx = this.program.instruction.createFlow(
-      JOB_ACCOUNT_DEFAULT_SIZE,
+      accountSize || JOB_ACCOUNT_DEFAULT_SIZE,
       serializableJob,
       createContext
     );
