@@ -3,8 +3,16 @@
 All notable changes to this project will be documented in this file.
 
 
-## [1.0.9] - 2022-03-20
 
+## [1.0.10] - 2022-03-29
+
+
+### Updates
+
+* Allow developers to specify custom job account sizes at creation [https://github.com/snowflake-so/snowflake-sdk/pull/7]
+* Update Snowflake PDA account calculation to support context isolation at the app-id level [https://github.com/snowflake-so/snowflake-sdk/pull/8]
+
+## [1.0.9] - 2022-03-20
 
 ### Features
 
