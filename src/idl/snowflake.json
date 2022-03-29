@@ -175,6 +175,11 @@
           "isSigner": true
         },
         {
+          "name": "appId",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "pda",
           "isMut": true,
           "isSigner": false
@@ -199,6 +204,11 @@
           "name": "caller",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "appId",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "pda",
@@ -334,7 +344,7 @@
             "type": "bool"
           },
           {
-            "name": "dedicatedOperator",
+            "name": "appId",
             "type": "publicKey"
           },
           {
@@ -473,6 +483,35 @@
       }
     },
     {
+      "name": "ErrorCode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "InvalidJobData"
+          },
+          {
+            "name": "JobIsNotAssignedToOperator"
+          },
+          {
+            "name": "JobIsNotDueForExecution"
+          },
+          {
+            "name": "CannotMarkJobAsErrorIfItsWithinSchedule"
+          },
+          {
+            "name": "OperatorIsAlreadyRegistered"
+          },
+          {
+            "name": "ExecuteNowCanOnlyBePerformedByFlowOwner"
+          },
+          {
+            "name": "UserInstructionMustNotReferenceTheNodeOperator"
+          }
+        ]
+      }
+    },
+    {
       "name": "TriggerType",
       "type": {
         "kind": "enum",
@@ -502,29 +541,9 @@
           }
         ]
       }
-    },
-    {
-      "name": "ErrorCode",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "InvalidJobData"
-          },
-          {
-            "name": "JobIsNotAssignedToOperator"
-          },
-          {
-            "name": "JobIsNotDueForExecution"
-          },
-          {
-            "name": "CannotMarkJobAsErrorIfItsWithinSchedule"
-          },
-          {
-            "name": "OperatorIsAlreadyRegistered"
-          }
-        ]
-      }
     }
-  ]
+  ],
+  "metadata": {
+    "address": "BiVwqu45yQTxqTTTAD1UrMZNyZ3qsEVqKwTEfG9BvUs6"
+  }
 }

@@ -6,6 +6,7 @@ import { InstructionBuilder } from "../builder/instruction-builder";
 import { SNOWFLAKE_PROGRAM_ID } from "../config/program-id";
 import { Job } from "../model/job";
 import { SNOWFLAKE_IDL } from "../idl";
+import { DEFAULT_DEVELOPER_APP_ID, JOB_ACCOUNT_DEFAULT_SIZE } from "../config";
 
 export class Snowflake {
   program: Program;
@@ -25,10 +26,13 @@ export class Snowflake {
     this.finder = new Finder(this.program);
   }
 
-  async createJob(job: Job): Promise<TransactionSignature> {
+  async createJob(
+    job: Job,
+    accountSize: number = JOB_ACCOUNT_DEFAULT_SIZE
+  ): Promise<TransactionSignature> {
     job.validateForCreate();
     const { instructions, signers } =
-      this.instructionBuilder.buildCreateJobInstruction(job);
+      this.instructionBuilder.buildCreateJobInstruction(job, accountSize);
 
     const tx = await this.transactionSender.sendWithWallet({
       instructions,
@@ -74,17 +78,23 @@ export class Snowflake {
     return await this.finder.findAll();
   }
 
-  async getSnowflakePDAForUser(user: PublicKey): Promise<PublicKey> {
+  async getSnowflakePDAForUser(
+    user: PublicKey,
+    developerAppId: PublicKey = DEFAULT_DEVELOPER_APP_ID
+  ): Promise<PublicKey> {
     const [pda] = await PublicKey.findProgramAddress(
-      [user.toBuffer()],
+      [user.toBuffer(), developerAppId.toBuffer()],
       new PublicKey(SNOWFLAKE_PROGRAM_ID)
     );
     return pda;
   }
 
-  async depositFeeAccount(lamports: number): Promise<string> {
+  async depositFeeAccount(
+    lamports: number,
+    developerAppId: PublicKey = DEFAULT_DEVELOPER_APP_ID
+  ): Promise<string> {
     const walletPubkey = this.provider.wallet.publicKey;
-    const pda = await this.getSnowflakePDAForUser(walletPubkey);
+    const pda = await this.getSnowflakePDAForUser(walletPubkey, developerAppId);
     const depositTx = this.instructionBuilder.buildSystemTransferInstruction(
       walletPubkey,
       pda,
