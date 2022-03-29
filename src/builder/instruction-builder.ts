@@ -9,7 +9,10 @@ export class InstructionBuilder {
     this.program = program;
   }
 
-  buildCreateJobInstruction(job: Job, accountSize?: number): InstructionsAndSigners {
+  buildCreateJobInstruction(
+    job: Job,
+    accountSize: number
+  ): InstructionsAndSigners {
     const serializableJob = job.toSerializableJob();
     let newFlowKeyPair = Keypair.generate();
 
@@ -22,7 +25,7 @@ export class InstructionBuilder {
     };
 
     const createIx = this.program.instruction.createFlow(
-      accountSize || JOB_ACCOUNT_DEFAULT_SIZE,
+      accountSize,
       serializableJob,
       createContext
     );
@@ -59,7 +62,11 @@ export class InstructionBuilder {
     return { instructions: [deleteIx], signers: [] };
   }
 
-  buildSystemTransferInstruction(from: PublicKey, to: PublicKey, amount: number) {
+  buildSystemTransferInstruction(
+    from: PublicKey,
+    to: PublicKey,
+    amount: number
+  ) {
     let depositTx = SystemProgram.transfer({
       fromPubkey: from,
       toPubkey: to,

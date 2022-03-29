@@ -37,6 +37,20 @@ test("create job", async function () {
   expect(fetchedJob);
 });
 
+test("create job with specific size", async function () {
+  const job = new JobBuilder()
+    .jobName("hello world")
+    .jobInstructions(instructions)
+    .scheduleOnce(tomorrow())
+    .build();
+
+  const txId = await snowflake.createJob(job, 500);
+  console.log("create job with of with specific size txn signature ", txId);
+  const fetchedJob = await snowflake.fetch(job.pubKey);
+  console.log(fetchedJob);
+  expect(fetchedJob.name).toBe("hello world");
+});
+
 test("update job", async function () {
   const job = new JobBuilder()
     .jobName("hello world")
@@ -98,7 +112,7 @@ test("get Snowflake PDA for user", async function () {
   let pda = await snowflake.getSnowflakePDAForUser(
     new PublicKey("EpmRY1vzTajbur4hkipMi3MbvjbJHKzqEAAqXj12ccZQ")
   );
-  expect(pda.toString()).toBe("Br7r5czPJ3yrTXo3KcS1MCpZVASyc2E5gtAeCfm37hth");
+  expect(pda.toString()).toBe("Bf4nWuxMhAeSPR68viDcZkjh9svsdqPZJCAUWtkvvoko");
 });
 
 test("deposit fee account", async function () {
