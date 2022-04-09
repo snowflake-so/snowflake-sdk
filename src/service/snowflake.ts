@@ -4,7 +4,7 @@ import { TransactionSender } from "./transaction-sender";
 import Finder from "./finder";
 import { InstructionBuilder } from "../builder/instruction-builder";
 import { SNOWFLAKE_PROGRAM_ID } from "../config/program-id";
-import { Job } from "../model/job";
+import { FeeSource, Job } from "../model/job";
 import { SNOWFLAKE_IDL } from "../idl";
 import { DEFAULT_DEVELOPER_APP_ID, JOB_ACCOUNT_DEFAULT_SIZE } from "../config";
 
@@ -31,8 +31,23 @@ export class Snowflake {
     accountSize: number = JOB_ACCOUNT_DEFAULT_SIZE
   ): Promise<TransactionSignature> {
     job.validateForCreate();
+
     const { instructions, signers } =
       this.instructionBuilder.buildCreateJobInstruction(job, accountSize);
+
+    let fundFlowTx;
+    if (job.payFeeFrom == FeeSource.FromFlow) {
+      const walletPubkey = this.provider.wallet.publicKey;
+      fundFlowTx = this.instructionBuilder.buildSystemTransferInstruction(
+        walletPubkey,
+        signers[0].publicKey,
+        job.initialFund
+      );
+    }
+    if (fundFlowTx) {
+      instructions.push(...fundFlowTx.instructions);
+      signers.push(...fundFlowTx.signers);
+    }
 
     const tx = await this.transactionSender.sendWithWallet({
       instructions,
