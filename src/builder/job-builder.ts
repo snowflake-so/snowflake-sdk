@@ -1,6 +1,7 @@
 import { TransactionInstruction } from "@solana/web3.js";
-import { Job, TriggerType, UnixTimeStamp } from "../model/job";
+import { FeeSource, Job, TriggerType, UnixTimeStamp } from "../model/job";
 import { RECURRING_FOREVER } from "../config";
+import { ErrorMessage } from "../config/error";
 
 export class JobBuilder {
   private job: Job = new Job();
@@ -50,6 +51,21 @@ export class JobBuilder {
   scheduleConditional(numberOfExecutions: number): JobBuilder {
     this.job.triggerType = TriggerType.ProgramCondition;
     this.job.remainingRuns = numberOfExecutions;
+    return this;
+  }
+
+  selfFunded(isSelfFunded: boolean): JobBuilder {
+    this.job.payFeeFrom = isSelfFunded
+      ? FeeSource.FromFlow
+      : FeeSource.FromFeeAccount;
+    return this;
+  }
+
+  initialFund(amount: number): JobBuilder {
+    if (this.job.payFeeFrom !== FeeSource.FromFlow) {
+      throw new Error(ErrorMessage.JobNotBuiltAsSelfFunded);
+    }
+    this.job.initialFund = amount;
     return this;
   }
 

@@ -8,12 +8,16 @@ import {
 import { Buffer } from "buffer";
 import _ from "lodash";
 import { RETRY_WINDOW } from "../config/job-config";
-import { SNOWFLAKE_PROGRAM_ID } from "../config/program-id";
 import { ErrorMessage } from "../config/error";
 import { CUSTOM_ACTION_CODE } from "../config";
 
 export type UnixTimeStamp = number;
 export type UTCOffset = number;
+
+export enum FeeSource {
+  FromFeeAccount = 0,
+  FromFlow = 1,
+}
 
 export enum TriggerType {
   None = 1,
@@ -27,6 +31,7 @@ const NON_BN_FIELDS = [
   "retryWindow",
   "clientAppId",
   "userUtcOffset",
+  "payFeeFrom",
 ];
 
 export class Job {
@@ -51,6 +56,8 @@ export class Job {
   name: string = "job - " + new Date().toLocaleDateString();
   extra: String = "";
   triggerType: TriggerType = TriggerType.None;
+  payFeeFrom: FeeSource = FeeSource.FromFeeAccount;
+  initialFund: number = 0;
   instructions: TransactionInstruction[] = [];
 
   isBNType(property: string): boolean {

@@ -4,4 +4,5 @@ export enum ErrorMessage {
   CreateJobWithWeekdayCron = "Can't create job with weekday cron.",
   UpdateJobWithWeekdayCron = "Can't update job with weekday cron.",
   InvalidCron = "Invalid cron.",
+  JobNotBuiltAsSelfFunded = "Job is not built as self-funded.",
 }

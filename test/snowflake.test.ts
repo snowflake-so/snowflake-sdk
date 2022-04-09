@@ -37,6 +37,29 @@ test("create job", async function () {
   expect(fetchedJob);
 });
 
+test("create self-funded job", async function () {
+  const job = new JobBuilder()
+    .jobName("Self-funded automation")
+    .jobInstructions(instructions)
+    .scheduleConditional(5)
+    .selfFunded(true)
+    .initialFund(1000000000)
+    .build();
+
+  const txId = await snowflake.createJob(job);
+  console.log("create job txn signature ", txId);
+
+  const fetchedJob = await snowflake.fetch(job.pubKey);
+
+  console.log(fetchedJob);
+
+  expect(fetchedJob.name).toBe("Self-funded automation");
+  expect(fetchedJob.triggerType).toBe(TriggerType.ProgramCondition);
+  expect(fetchedJob.recurring).toBe(false);
+  expect(fetchedJob.pubKey).toBeDefined();
+  expect(fetchedJob);
+});
+
 test("create job with specific size", async function () {
   const job = new JobBuilder()
     .jobName("hello world")
