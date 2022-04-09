@@ -75,6 +75,7 @@ const job = new JobBuilder()
 
 await snowflake.createJob(job);
 ```
+
 ### Build a program condition triggered job
 
 Schedule a job that is triggered based on an arbitrary condition defined within the user program.
@@ -89,10 +90,26 @@ const job = new JobBuilder()
 await snowflake.createJob(job);
 ```
 
+### Build a self-funded job
+
+Self-funded job will take an account to pay fees on its own by using the initial fund. Fee account is no longer used for paying the job's fee.
+
+```typescript
+const job = new JobBuilder()
+  .jobName("hello world")
+  .jobInstruction(instructions)
+  .scheduleConditional(1);
+  .selfFunded(true)
+  .initialFund(100000) // 1000000 lamports
+  .build()
+
+await snowflake.createJob(job)
+```
+
 ### Update a job
 
 ```typescript
-await snowflake.updateJob(job);
+await snowflake.updateJob(jobPubkey);
 ```
 
 ### Delete a job
@@ -113,10 +130,22 @@ await snowflake.fetch(jobPubkey);
 await snowflake.fetchByOwner(owner);
 ```
 
+### Get Snowflake PDA
+
+```typescript
+await snowflake.getSnowflakePDAForUser(userPublicKey);
+```
+
+### Deposit fee account
+
+```typescript
+await snowflake.depositFeeAccount(lamports);
+```
+
 ## Usage
 
 ```typescript
-import {JobBuilder, Snowflake} from "@snowflake-so/snowflake-sdk";
+import { JobBuilder, Snowflake } from "@snowflake-so/snowflake-sdk";
 import { Provider } from "@project-serum/anchor";
 
 /** Initialize a Snowflake service on Devnet **/
@@ -177,6 +206,13 @@ async function main() {
 
   /** Delete a job **/
   await snowflake.deleteJob(job.pubKey);
+
+  /** Get Snowflake PDA for user **/
+  const walletAddress: PublicKey = provider.wallet.publicKey;
+  await snowflake.getSnowflakePDAforUser(walletAddress);
+
+  /** Deposit to fee account (5000000 lamports) **/
+  await snowflake.depositFeeAccount(5000000);
 }
 ```
 
