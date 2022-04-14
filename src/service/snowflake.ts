@@ -89,6 +89,10 @@ export class Snowflake {
     return await this.finder.findByJobOwner(owner);
   }
 
+  async findByJobAppId(appId: number): Promise<Job[]> {
+    return await this.finder.findByJobAppId(appId);
+  }
+
   async findByOwnerAndAppId(owner: PublicKey, appId: number): Promise<Job[]> {
     return await this.finder.findByJobOwnerAndAppId(owner, appId);
   }
