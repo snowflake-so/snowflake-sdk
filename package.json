@@ -17,6 +17,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/bn.js": "^5.1.0",
     "@types/jest": "^27.4.0",
     "@types/mocha": "^9.1.0",
     "buffer-layout": "^1.2.2",
