@@ -1,17 +1,17 @@
-import { Provider } from "@project-serum/anchor";
+import { AnchorProvider } from "@project-serum/anchor";
 import { instructions, tomorrow } from "./test-data";
 import { clusterApiUrl, PublicKey } from "@solana/web3.js";
 import { Snowflake } from "../src/service/snowflake";
 import { JobBuilder } from "../src/builder/job-builder";
 import { TriggerType } from "../src/model/job";
 
-let provider: Provider;
+let provider: AnchorProvider;
 let snowflake: Snowflake;
 let owner: PublicKey;
 
 beforeAll(() => {
   const API_URL = clusterApiUrl("devnet");
-  provider = Provider.local(API_URL);
+  provider = AnchorProvider.local(API_URL);
   snowflake = new Snowflake(provider);
   owner = provider.wallet.publicKey;
 });

@@ -12,11 +12,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@project-serum/anchor": "^0.21.0",
-    "@solana/web3.js": "^1.22.0",
+    "@project-serum/anchor": "^0.24.2",
+    "@solana/web3.js": "^1.37.2",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/bn.js": "^5.1.0",
     "@types/jest": "^27.4.0",
     "@types/mocha": "^9.1.0",
     "buffer-layout": "^1.2.2",

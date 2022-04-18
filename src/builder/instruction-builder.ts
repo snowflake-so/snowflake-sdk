@@ -1,11 +1,11 @@
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
-import { Program } from "@project-serum/anchor";
+import { Program, AnchorProvider } from "@project-serum/anchor";
 import { InstructionsAndSigners, Job } from "../model/job";
-import { JOB_ACCOUNT_DEFAULT_SIZE } from "../config/job-config";
+import { Snowflake } from "../idl/snowflake";
 
 export class InstructionBuilder {
-  program: Program;
-  constructor(program: Program) {
+  program: Program<Snowflake>;
+  constructor(program: Program<Snowflake>) {
     this.program = program;
   }
 
@@ -19,7 +19,7 @@ export class InstructionBuilder {
     let createContext: any = {
       accounts: {
         flow: newFlowKeyPair.publicKey,
-        owner: this.program.provider.wallet.publicKey,
+        owner: (this.program.provider as AnchorProvider).wallet.publicKey,
         systemProgram: SystemProgram.programId,
       },
     };
@@ -37,7 +37,7 @@ export class InstructionBuilder {
     let updateContext: any = {
       accounts: {
         flow: job.pubKey,
-        owner: this.program.provider.wallet.publicKey,
+        owner:  (this.program.provider as AnchorProvider).wallet.publicKey,
       },
       signers: [],
     };
@@ -53,7 +53,7 @@ export class InstructionBuilder {
     let deleteContext: any = {
       accounts: {
         flow: jobPubKey,
-        owner: this.program.provider.wallet.publicKey,
+        owner:  (this.program.provider as AnchorProvider).wallet.publicKey,
       },
       signers: [],
     };
