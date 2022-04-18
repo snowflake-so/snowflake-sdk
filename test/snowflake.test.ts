@@ -74,7 +74,7 @@ test("create job with specific size", async function () {
   expect(fetchedJob.name).toBe("hello world");
 });
 
-test("get job by owner and client app id", async function () {
+test("get job by owner and app id", async function () {
   const job = new JobBuilder()
     .jobName("hello world")
     .jobInstructions(instructions)
@@ -84,7 +84,8 @@ test("get job by owner and client app id", async function () {
   const txId = await snowflake.createJob(job, 500);
   console.log("create job with of with specific size txn signature ", txId);
 
-  const jobs = await snowflake.findByOwnerAndAppId(owner, 0);
+  const defaultAppId = new PublicKey('11111111111111111111111111111111');
+  const jobs = await snowflake.findByOwnerAndAppId(owner, defaultAppId);
 
   expect(jobs.length).toBeGreaterThan(0);
 });

@@ -14,6 +14,7 @@ export default class Finder {
     let serJob: SerializableJob = await this.program.account.flow.fetch(
       jobPubKey
     );
+    console.log("SerJob", serJob);
     return Job.fromSerializableJob(serJob, jobPubKey);
   }
 
@@ -21,10 +22,11 @@ export default class Finder {
     let ownerFilter = this.getOwnerFilter(owner);
     let serJobs: ProgramAccount<SerializableJob>[] =
       await this.program.account.flow.all([ownerFilter]);
+    console.log("SerJob", serJobs);
     return serJobs.map((v) => Job.fromSerializableJob(v.account, v.publicKey));
   }
 
-  async findByJobAppId(appId: number): Promise<Job[]> {
+  async findByJobAppId(appId: PublicKey): Promise<Job[]> {
     let appIdFilter = this.getAppIdFilter(appId);
     let serJobs: ProgramAccount<SerializableJob>[] =
       await this.program.account.flow.all([appIdFilter]);
@@ -33,7 +35,7 @@ export default class Finder {
 
   async findByJobOwnerAndAppId(
     owner: PublicKey,
-    appId: number
+    appId: PublicKey 
   ): Promise<Job[]> {
     let ownerFilter = this.getOwnerFilter(owner);
     let appIdFilter = this.getAppIdFilter(appId);
@@ -57,11 +59,11 @@ export default class Finder {
     };
   }
 
-  private getAppIdFilter(appId: number): GetProgramAccountsFilter {
+  private getAppIdFilter(appId: PublicKey): GetProgramAccountsFilter {
     return {
       memcmp: {
-        offset: JOB_ACCOUNT_LAYOUT.offsetOf("clientAppId"),
-        bytes: bs58.encode(new BN(appId).toBuffer()),
+        offset: JOB_ACCOUNT_LAYOUT.offsetOf("appId"),
+        bytes: appId.toBase58(),
       },
     };
   }
