@@ -2,10 +2,11 @@ import { Program, ProgramAccount } from "@project-serum/anchor";
 import { GetProgramAccountsFilter, PublicKey } from "@solana/web3.js";
 import { Job, SerializableJob } from "../model/job";
 import { JOB_ACCOUNT_LAYOUT } from "../model/job-layout";
+import { Snowflake } from "../idl/snowflake";
 
 export default class Finder {
-  program: Program;
-  constructor(program: Program) {
+  program: Program<Snowflake>;
+  constructor(program: Program<Snowflake>) {
     this.program = program;
   }
 

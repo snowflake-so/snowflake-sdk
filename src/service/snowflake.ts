@@ -1,23 +1,24 @@
 import { PublicKey, TransactionSignature } from "@solana/web3.js";
-import { Idl, Program, Provider } from "@project-serum/anchor";
+import { Program, AnchorProvider } from "@project-serum/anchor";
 import { TransactionSender } from "./transaction-sender";
 import Finder from "./finder";
 import { InstructionBuilder } from "../builder/instruction-builder";
 import { SNOWFLAKE_PROGRAM_ID } from "../config/program-id";
 import { FeeSource, Job } from "../model/job";
 import { SNOWFLAKE_IDL } from "../idl";
+import { Snowflake as SnowflakeType } from "../idl/snowflake";
 import { DEFAULT_DEVELOPER_APP_ID, JOB_ACCOUNT_DEFAULT_SIZE } from "../config";
 
 export class Snowflake {
-  program: Program;
+  program: Program<SnowflakeType>;
   instructionBuilder: InstructionBuilder;
   transactionSender: TransactionSender;
-  provider: Provider;
+  provider: AnchorProvider;
   finder: Finder;
-  constructor(provider: Provider) {
+  constructor(provider: AnchorProvider) {
     this.provider = provider;
-    this.program = new Program(
-      SNOWFLAKE_IDL as Idl,
+    this.program = new Program<SnowflakeType>(
+      SNOWFLAKE_IDL as any,
       SNOWFLAKE_PROGRAM_ID,
       this.provider
     );
