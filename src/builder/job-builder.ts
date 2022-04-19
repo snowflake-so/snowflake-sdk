@@ -1,4 +1,4 @@
-import { TransactionInstruction } from "@solana/web3.js";
+import { PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { FeeSource, Job, TriggerType, UnixTimeStamp } from "../model/job";
 import { RECURRING_FOREVER } from "../config";
 import { ErrorMessage } from "../config/error";
@@ -66,6 +66,11 @@ export class JobBuilder {
       throw new Error(ErrorMessage.JobNotBuiltAsSelfFunded);
     }
     this.job.initialFund = amount;
+    return this;
+  }
+
+  byAppId(appId: PublicKey): JobBuilder {
+    this.job.appId = appId;
     return this;
   }
 
