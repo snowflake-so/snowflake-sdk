@@ -35,20 +35,6 @@ export class Snowflake {
     const { instructions, signers } =
       this.instructionBuilder.buildCreateJobInstruction(job, accountSize);
 
-    let fundFlowTx;
-    if (job.payFeeFrom == FeeSource.FromFlow) {
-      const walletPubkey = this.provider.wallet.publicKey;
-      fundFlowTx = this.instructionBuilder.buildSystemTransferInstruction(
-        walletPubkey,
-        signers[0].publicKey,
-        job.initialFund
-      );
-    }
-    if (fundFlowTx) {
-      instructions.push(...fundFlowTx.instructions);
-      signers.push(...fundFlowTx.signers);
-    }
-
     const tx = await this.transactionSender.sendWithWallet({
       instructions,
       signers,
