@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-
+## [1.0.11] - 2022-04-20
+* Support self-funded job [https://github.com/snowflake-so/snowflake-sdk/pull/10]
+* Add finding jobs by appId [https://github.com/snowflake-so/snowflake-sdk/pull/12]
+ 
 
 ## [1.0.10] - 2022-03-29
 

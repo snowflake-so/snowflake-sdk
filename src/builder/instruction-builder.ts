@@ -1,6 +1,6 @@
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
-import { InstructionsAndSigners, Job } from "../model/job";
+import { FeeSource, InstructionsAndSigners, Job } from "../model/job";
 import { JOB_ACCOUNT_DEFAULT_SIZE } from "../config/job-config";
 
 export class InstructionBuilder {
@@ -29,7 +29,25 @@ export class InstructionBuilder {
       serializableJob,
       createContext
     );
-    return { instructions: [createIx], signers: [newFlowKeyPair] };
+
+    let instructions = [createIx];
+    let signers = [newFlowKeyPair];
+
+    let fundFlowTx;
+    if (job.payFeeFrom == FeeSource.FromFlow) {
+      const walletPubkey = this.program.provider.wallet.publicKey;
+      fundFlowTx = this.buildSystemTransferInstruction(
+        walletPubkey,
+        newFlowKeyPair.publicKey,
+        job.initialFund
+      );
+    }
+
+    if (fundFlowTx) {
+      instructions.push(...fundFlowTx.instructions);
+      signers.push(...fundFlowTx.signers);
+    }
+    return { instructions: instructions, signers: signers };
   }
 
   buildUpdateJobInstruction(job: Job) {
