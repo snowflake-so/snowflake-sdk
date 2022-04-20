@@ -9,7 +9,7 @@ import { Buffer } from "buffer";
 import _ from "lodash";
 import { RETRY_WINDOW } from "../config/job-config";
 import { ErrorMessage } from "../config/error";
-import { CUSTOM_ACTION_CODE } from "../config";
+import { CUSTOM_ACTION_CODE, DEFAULT_DEVELOPER_APP_ID } from "../config";;
 
 export type UnixTimeStamp = number;
 export type UTCOffset = number;
@@ -58,6 +58,7 @@ export class Job {
   triggerType: TriggerType = TriggerType.None;
   payFeeFrom: FeeSource = FeeSource.FromFeeAccount;
   initialFund: number = 0;
+  appId: PublicKey = DEFAULT_DEVELOPER_APP_ID;
   instructions: TransactionInstruction[] = [];
 
   isBNType(property: string): boolean {

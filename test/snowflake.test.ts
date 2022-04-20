@@ -3,17 +3,36 @@ import { instructions, tomorrow } from "./test-data";
 import { clusterApiUrl, PublicKey } from "@solana/web3.js";
 import { Snowflake } from "../src/service/snowflake";
 import { JobBuilder } from "../src/builder/job-builder";
-import { TriggerType } from "../src/model/job";
+import { Job, TriggerType } from "../src/model/job";
 
 let provider: Provider;
 let snowflake: Snowflake;
 let owner: PublicKey;
+let testJobs: Job[] = [];
+
+jest.setTimeout(60 * 1000);
 
 beforeAll(() => {
   const API_URL = clusterApiUrl("devnet");
   provider = Provider.local(API_URL);
   snowflake = new Snowflake(provider);
   owner = provider.wallet.publicKey;
+});
+
+afterEach(async () => {
+  if (testJobs && testJobs.length) {
+    console.log('Jobs to be cleaned up', testJobs.length);
+
+    for (let i = testJobs.length - 1; i >= 0; i--) {
+      const jobToBeDeleted = testJobs[i];
+      try {
+        await snowflake.deleteJob(jobToBeDeleted.pubKey);
+        testJobs.pop();
+      } catch (error) {
+        console.log('Clean up error', jobToBeDeleted?.pubKey, error);
+      }
+    }
+  }
 });
 
 test("create job", async function () {
@@ -23,7 +42,7 @@ test("create job", async function () {
     .scheduleOnce(tomorrow())
     .build();
 
-  const txId = await snowflake.createJob(job);
+  const txId = await snowflake.createJob(registerTestJob(job));
   console.log("create job txn signature ", txId);
 
   const fetchedJob = await snowflake.fetch(job.pubKey);
@@ -46,7 +65,7 @@ test("create self-funded job", async function () {
     .initialFund(1000000000)
     .build();
 
-  const txId = await snowflake.createJob(job);
+  const txId = await snowflake.createJob(registerTestJob(job));
   console.log("create job txn signature ", txId);
 
   const fetchedJob = await snowflake.fetch(job.pubKey);
@@ -67,11 +86,28 @@ test("create job with specific size", async function () {
     .scheduleOnce(tomorrow())
     .build();
 
-  const txId = await snowflake.createJob(job, 500);
+  const txId = await snowflake.createJob(registerTestJob(job), 500);
   console.log("create job with of with specific size txn signature ", txId);
   const fetchedJob = await snowflake.fetch(job.pubKey);
   console.log(fetchedJob);
   expect(fetchedJob.name).toBe("hello world");
+});
+
+test("get job by owner and app id", async function () {
+  const SAMPLE_APP_ID = new PublicKey('BxUeMg5etjmiDX25gbGi2pn1MyzkcQx3ZCCiUifTUhyj');
+  const job = new JobBuilder()
+    .jobName("hello world")
+    .jobInstructions(instructions)
+    .scheduleOnce(tomorrow())
+    .byAppId(SAMPLE_APP_ID)
+    .build();
+
+  const txId = await snowflake.createJob(job, 500);
+  console.log("create job with of with specific size txn signature ", txId);
+
+  const jobs = await snowflake.findByOwnerAndAppId(owner, SAMPLE_APP_ID);
+
+  expect(jobs.length).toBeGreaterThan(0);
 });
 
 test("update job", async function () {
@@ -81,7 +117,7 @@ test("update job", async function () {
     .scheduleOnce(tomorrow())
     .build();
 
-  await snowflake.createJob(job);
+  await snowflake.createJob(registerTestJob(job));
 
   let fetchedJob = await snowflake.fetch(job.pubKey);
 
@@ -148,3 +184,8 @@ test("deposit fee account", async function () {
 
   expect(balanceAfterDeposit).toBe(balanceBeforeDeposit + amount);
 });
+
+function registerTestJob(job: Job) {
+  testJobs.push(job);
+  return job;
+}
