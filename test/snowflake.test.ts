@@ -1,11 +1,11 @@
-import { Provider } from "@project-serum/anchor";
+import { AnchorProvider, Provider } from "@project-serum/anchor";
 import { instructions, tomorrow } from "./test-data";
 import { clusterApiUrl, PublicKey } from "@solana/web3.js";
 import { Snowflake } from "../src/service/snowflake";
 import { JobBuilder } from "../src/builder/job-builder";
 import { Job, TriggerType } from "../src/model/job";
 
-let provider: Provider;
+let provider: AnchorProvider;
 let snowflake: Snowflake;
 let owner: PublicKey;
 let testJobs: Job[] = [];
@@ -14,7 +14,7 @@ jest.setTimeout(60 * 1000);
 
 beforeAll(() => {
   const API_URL = clusterApiUrl("devnet");
-  provider = Provider.local(API_URL);
+  provider = AnchorProvider.local(API_URL);
   snowflake = new Snowflake(provider);
   owner = provider.wallet.publicKey;
 });
