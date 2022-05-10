@@ -22,8 +22,15 @@ yarn add @snowflake-so/snowflake-sdk
 
 To create a new Snowflake service, we would need to initialize with the Provider.
 
+
 ```typescript
+// if your Anchor version is older than 0.24.2, 
+// please use Snowflake SDK version 1.0.11 and initialize the provider as below
 let provider: Provider = Provider.local(API_URL);
+
+// if your Anchor version is 0.24.2 or later, 
+// please use the latest version of Snowflake SDK and initialize the provider as below
+let provider: Provider = AnchorProvider.local(API_URL); 
 ```
 
 The `API_URL` is the endpoint to the Solana cluster. Empty API_URL is pointed to the `local testnet`
