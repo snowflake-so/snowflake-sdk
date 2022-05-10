@@ -1,10 +1,10 @@
 import { Transaction, TransactionSignature } from "@solana/web3.js";
-import { Provider } from "@project-serum/anchor";
+import { AnchorProvider, Provider } from "@project-serum/anchor";
 import { InstructionsAndSigners } from "../model/job";
 
 export class TransactionSender {
-  provider: Provider;
-  constructor(provider: Provider) {
+  provider: AnchorProvider;
+  constructor(provider: AnchorProvider) {
     this.provider = provider;
   }
 
@@ -13,7 +13,7 @@ export class TransactionSender {
   ): Promise<TransactionSignature> {
     const transaction = new Transaction();
     transaction.add(...instructionsAndSigners.instructions);
-    return await this.provider.send(
+    return await this.provider.sendAndConfirm(
       transaction,
       instructionsAndSigners.signers
     );
