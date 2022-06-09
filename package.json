@@ -20,6 +20,7 @@
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^27.4.0",
     "@types/mocha": "^9.1.0",
+    "@types/node-fetch": "^2.6.1",
     "buffer-layout": "^1.2.2",
     "dotenv": "^16.0.0",
     "jest": "^27.5.1",
