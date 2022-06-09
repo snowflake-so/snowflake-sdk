@@ -1,9 +1,10 @@
-import { AnchorProvider, Provider } from "@project-serum/anchor";
-import { instructions, tomorrow } from "./test-data";
-import { clusterApiUrl, PublicKey } from "@solana/web3.js";
+import { AnchorProvider } from "@project-serum/anchor";
+import { instructions, testWallet, tomorrow } from "./test-data";
+import { clusterApiUrl, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { Snowflake } from "../src/service/snowflake";
 import { JobBuilder } from "../src/builder/job-builder";
 import { Job, TriggerType } from "../src/model/job";
+import { initAnchorProvider } from "../src/utils";
 
 let provider: AnchorProvider;
 let snowflake: Snowflake;
@@ -12,16 +13,33 @@ let testJobs: Job[] = [];
 
 jest.setTimeout(60 * 1000);
 
-beforeAll(() => {
+const airdropSolToWallet = async () => {
+  try {
+    const balance = await provider.connection.getBalance(testWallet.publicKey);
+    if (balance < 4 * LAMPORTS_PER_SOL) {
+      const sig = await provider.connection.requestAirdrop(
+        testWallet.publicKey,
+        2 * LAMPORTS_PER_SOL
+      );
+      await provider.connection.confirmTransaction(sig);
+    }
+  } catch (error: any) {
+    console.log(error.message);
+  }
+};
+
+beforeAll(async () => {
   const API_URL = clusterApiUrl("devnet");
-  provider = AnchorProvider.local(API_URL);
+  provider = initAnchorProvider(testWallet, API_URL);
+  // provider = AnchorProvider.local(API_URL);
   snowflake = new Snowflake(provider);
   owner = provider.wallet.publicKey;
+  await airdropSolToWallet();
 });
 
 afterEach(async () => {
   if (testJobs && testJobs.length) {
-    console.log('Jobs to be cleaned up', testJobs.length);
+    console.log("Jobs to be cleaned up", testJobs.length);
 
     for (let i = testJobs.length - 1; i >= 0; i--) {
       const jobToBeDeleted = testJobs[i];
@@ -29,7 +47,7 @@ afterEach(async () => {
         await snowflake.deleteJob(jobToBeDeleted.pubKey);
         testJobs.pop();
       } catch (error) {
-        console.log('Clean up error', jobToBeDeleted?.pubKey, error);
+        console.log("Clean up error", jobToBeDeleted?.pubKey, error);
       }
     }
   }
@@ -94,7 +112,9 @@ test("create job with specific size", async function () {
 });
 
 test("get job by owner and app id", async function () {
-  const SAMPLE_APP_ID = new PublicKey('BxUeMg5etjmiDX25gbGi2pn1MyzkcQx3ZCCiUifTUhyj');
+  const SAMPLE_APP_ID = new PublicKey(
+    "BxUeMg5etjmiDX25gbGi2pn1MyzkcQx3ZCCiUifTUhyj"
+  );
   const job = new JobBuilder()
     .jobName("hello world")
     .jobInstructions(instructions)
@@ -175,7 +195,7 @@ test("get Snowflake PDA for user", async function () {
 });
 
 test("deposit fee account", async function () {
-  const amount = 100000;
+  const amount = 0.01 * LAMPORTS_PER_SOL;
   const owner = provider.wallet.publicKey;
   let pda = await snowflake.getSnowflakePDAForUser(owner);
   const balanceBeforeDeposit = await provider.connection.getBalance(pda);
